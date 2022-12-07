@@ -5,7 +5,6 @@ export const getDatosUbicacion =async (req,res) => {
         const result = await pool.request().query('select * from TUbicacion')
         res.json(result.recordset)
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }  

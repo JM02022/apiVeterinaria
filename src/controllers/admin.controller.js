@@ -1,13 +1,14 @@
 import {getConnection,sql} from '../database/conecction'
 
 export const postLoginAdmin = async (req,res) => {
-    const {usario,contrasenia} = req.body
+    const {Email,Contrasenia} = req.body
     try {
         const pool = await getConnection()
         const result = await pool.request()
-        .input('usuario',sql.VarChar,usario)
-        .input('contrasenia',sql.VarChar,contrasenia)
-        .query('select usuario,contrasenia from TAdmin where usuario = @usuario and contrasenia = @contrasenia')
+        .input('Email',sql.VarChar,Email)
+        .input('Contrasenia',sql.VarChar,Contrasenia)
+        .query('select Email,Contrasenia from TAdmi where Email = @Email and Contrasenia = @Contrasenia')
+        console.log(result.recordset)
         if(result.rowsAffected == 0){
             res.json("error")
         }else{
@@ -18,7 +19,6 @@ export const postLoginAdmin = async (req,res) => {
             res.json(rpta)
         }
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }

@@ -5,8 +5,7 @@ export const getConsulta =async (req,res) => {
         const result = await pool.request().query('select * from TConsulta')
         res.json(result.recordset)
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }  
 
@@ -26,26 +25,33 @@ export const postConsulta = async (req,res) => {
         .query('insert into TConsulta (CodConsulta,fechaConsulta,Diagnostico,Tratamiento,Precio,CodVeterinario,CodMascota) Values(@CodConsulta,@fechaConsulta,@Diagnostico,@Tratamiento,@Precio,@CodVeterinario,@CodMascota)')
         res.json({CodConsulta,fechaConsulta})
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }
 export const getConsultayId = async (req,res) => {
-    const {id} = req.params
-    const pool = await getConnection()
-    const result = await pool.request()
+    try {
+        const {id} = req.params
+        const pool = await getConnection()
+        const result = await pool.request()
         .input('id',sql.VarChar,id)
         .query('select * from TConsulta where CodConsulta =@id')
-    res.send(result.recordset)
+         res.json(result.recordset)   
+    } catch (error) {
+        res.json("error")
+    }
 }
 
 export const DeleteConsultaById = async (req,res) => {
-    const {id} = req.params 
-    const pool = await getConnection()
-    await pool.request()
+    try {
+        const {id} = req.params 
+        const pool = await getConnection()
+        await pool.request()
         .input('id',sql.VarChar,id)
         .query('delete from TConsulta where CodConsulta =@id')
-    res.send("se elimino consulta")
+        res.json("se elimino")   
+    } catch (error) {
+        res.json("error")
+    }
 }
 
 export const UpdateConsultaById = async (req,res) => {
@@ -63,9 +69,8 @@ export const UpdateConsultaById = async (req,res) => {
         .input('CodVeterinario',sql.VarChar,CodVeterinario)
         .input('CodMascota',sql.VarChar,CodMascota)
         .query('update TConsulta set CodConsulta=@CodConsulta,fechaConsulta=@fechaConsulta,Diagnostico=@Diagnostico,Tratamiento=@Tratamiento,Precio=@Precio,CodVeterinario=@CodVeterinario,CodMascota=@CodMascota where CodConsulta = @CodConsulta')
-        res.json('Consulta actualizado')
+        res.json('Cactualizado')
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }

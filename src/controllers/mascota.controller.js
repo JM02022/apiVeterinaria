@@ -5,8 +5,7 @@ export const getMascota =async (req,res) => {
         const result = await pool.request().query('select * from TMascota')
         res.json(result.recordset)
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }  
 
@@ -29,26 +28,34 @@ export const postMascota = async (req,res) => {
         .query('insert into TMascota (CodMascota,NomMascota,EdadMascota,Especie,Raza,Peso,Tamanio,Sexo,CodDuenio,UrlFoto) Values(@CodMascota,@NomMascota,@EdadMascota,@Especie,@Raza,@Peso,@Tamanio,@Sexo,@CodDuenio,@UrlFoto)')
         res.json({CodMascota,NomMascota})
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }
 export const getMascotaById = async (req,res) => {
-    const {id} = req.params
-    const pool = await getConnection()
-    const result = await pool.request()
+    try {
+        const {id} = req.params
+        const pool = await getConnection()
+        const result = await pool.request()
         .input('id',sql.VarChar,id)
         .query('select * from TMascota where CodMascota =@id')
-    res.send(result.recordset)
+        res.json(result.recordset)   
+    } catch (error) {
+        res.json("error")
+    }
 }
 
 export const DeleteMascotaById = async (req,res) => {
-    const {id} = req.params 
-    const pool = await getConnection()
-    await pool.request()
+    try {
+        const {id} = req.params 
+        const pool = await getConnection()
+        await pool.request()
         .input('id',sql.VarChar,id)
         .query('delete from TMascota where CodMascota =@id')
-    res.send("se elimino mascota")
+        res.json("se elimino")
+    } catch (error) {
+        res.json("error")
+    }
+    
 }
 
 export const UpdateMascotaById = async (req,res) => {
@@ -69,9 +76,8 @@ export const UpdateMascotaById = async (req,res) => {
         .input('CodDuenio',sql.VarChar,CodDuenio)
         .input('UrlFoto',sql.VarChar,UrlFoto)
         .query('update TMascota set CodMascota=@CodMascota,NomMascota=@NomMascota,EdadMascota=@EdadMascota,Especie=@Especie,Raza=@Raza,Peso=@Peso,Tamanio=@Tamanio,Sexo=@Sexo,CodDuenio=@CodDuenio,UrlFoto=@UrlFoto where CodMascota = @CodMascota')
-        res.json('Mascota actualizado')
+        res.json('actualizado')
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }

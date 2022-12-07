@@ -5,8 +5,7 @@ export const getServicio =async (req,res) => {
         const result = await pool.request().query('select * from TServicio')
         res.json(result.recordset)
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }  
 
@@ -24,26 +23,33 @@ export const postServicio = async (req,res) => {
         .query('insert into TServicio (CodServicio,Descripcion,Precio,UrlFoto,CodMascota) Values(@CodServicio,@Descripcion,@Precio,@UrlFoto,@CodMascota)')
         res.json({CodServicio,Descripcion})
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }
 export const getServicioById = async (req,res) => {
-    const {id} = req.params
-    const pool = await getConnection()
-    const result = await pool.request()
+    try {
+        const {id} = req.params
+        const pool = await getConnection()
+        const result = await pool.request()
         .input('id',sql.VarChar,id)
         .query('select * from TServicio where CodServicio =@id')
-    res.send(result.recordset)
+        res.json(result.recordset)   
+    } catch (error) {
+        res.json("error")
+    }
 }
 
 export const DeleteServicioById = async (req,res) => {
-    const {id} = req.params 
-    const pool = await getConnection()
-    await pool.request()
+    try {
+        const {id} = req.params 
+        const pool = await getConnection()
+        await pool.request()
         .input('id',sql.VarChar,id)
         .query('delete from TServicio where CodServicio =@id')
-    res.send("se elimino servicio")
+        res.json("se elimino") 
+    } catch (error) {
+        res.json("error")
+    }
 }
 
 export const UpdateServicioById = async (req,res) => {
@@ -59,9 +65,8 @@ export const UpdateServicioById = async (req,res) => {
         .input('UrlFoto',sql.VarChar,UrlFoto)
         .input('CodMascota',sql.VarChar,CodMascota)
         .query('update TServicio set Descripcion=@Descripcion,Precio=@Precio,UrlFoto=@UrlFoto,CodMascota=@CodMascota where CodServicio = @CodServicio')
-        res.json('Servicio actualizado')
+        res.json('actualizado')
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }

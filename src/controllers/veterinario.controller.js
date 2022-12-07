@@ -5,8 +5,7 @@ export const getVeterinario =async (req,res) => {
         const result = await pool.request().query('select * from TVeterinario')
         res.json(result.recordset)
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }  
 
@@ -29,26 +28,33 @@ export const postVeterinario = async (req,res) => {
         .query('insert into TVeterinario (CodVeterinario,DniVeterinario,NomVeterinario,ApeVeterinario,EdadVeterinario,Email,AniosExperiencia,CelVeterinario,DireccionVeterinario,UrlFoto) Values(@CodVeterinario,@DniVeterinario,@NomVeterinario,@ApeVeterinario,@EdadVeterinario,@Email,@AniosExperiencia,@CelVeterinario,@DireccionVeterinario,@UrlFoto)')
         res.json({CodVeterinario,DniVeterinario})
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }
 export const getVeterinarioById = async (req,res) => {
-    const {id} = req.params
-    const pool = await getConnection()
-    const result = await pool.request()
+    try {
+        const {id} = req.params
+        const pool = await getConnection()
+        const result = await pool.request()
         .input('id',sql.VarChar,id)
         .query('select * from TVeterinario where CodVeterinario =@id')
-    res.send(result.recordset)
+        res.json(result.recordset)   
+    } catch (error) {
+        res.json("error")
+    }
 }
 
 export const DeleteVeterinoById = async (req,res) => {
-    const {id} = req.params 
-    const pool = await getConnection()
-    await pool.request()
+    try {
+        const {id} = req.params 
+       const pool = await getConnection()
+       await pool.request()
         .input('id',sql.VarChar,id)
         .query('delete from TVeterinario where CodVeterinario =@id')
-    res.send("se elimino cliente")
+       res.json("se elimino")   
+    } catch (error) {
+        res.json("error")     
+    }
 }
 
 export const UpdateVeterinarioById = async (req,res) => {
@@ -69,9 +75,8 @@ export const UpdateVeterinarioById = async (req,res) => {
         .input('DireccionVeterinario',sql.VarChar,DireccionVeterinario)
         .input('UrlFoto',sql.VarChar,UrlFoto)
         .query('update TVeterinario set DniVeterinario = @DniVeterinario ,NomVeterinario = @NomVeterinaria,ApeVeterinario = @ApeVeterinario,EdadVeterinario = @EdadVeterinario,Email = @Email,AniosExperiencia = @AniosExperiencia,CelVeterinario=@CelVeterinario,DireccionVeterinario = @DireccionVeterinario,UrlFoto=@UrlFoto where CodVeterinario = @CodVeterinario')
-        res.json('Veterinario actualizado')
+        res.json('actualizado')
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }

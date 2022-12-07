@@ -5,13 +5,13 @@ export const getDuenio =async (req,res) => {
         const result = await pool.request().query('select * from TDuenio')
         res.json(result.recordset)
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }  
 
 export const postDuenio = async (req,res) => {
     const {CodDuenio,DniDuenio,NomDuenio,ApeDuenio,EdadDuenio,Email,CelDuenio,DireccionDuenio} = req.body
+    console.log(req.body)
     try {
         const pool = await getConnection()
     await pool
@@ -27,26 +27,33 @@ export const postDuenio = async (req,res) => {
         .query('insert into TDuenio (CodDuenio,DniDuenio,NomDuenio,ApeDuenio,EdadDuenio,Email,CelDuenio,DireccionDuenio) Values(@CodDuenio,@DniDuenio,@NomDuenio,@ApeDuenio,@EdadDuenio,@Email,@CelDuenio,@DireccionDuenio)')
         res.json({CodDuenio,NomDuenio})
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }
 export const getDuenioyId = async (req,res) => {
-    const {id} = req.params
-    const pool = await getConnection()
-    const result = await pool.request()
+    try {
+        const {id} = req.params
+        const pool = await getConnection()
+        const result = await pool.request()
         .input('id',sql.VarChar,id)
         .query('select * from TDuenio where CodDuenio =@id')
-    res.send(result.recordset)
+        res.json(result.recordset)   
+    } catch (error) {
+        res.json("error")
+    }
 }
 
 export const DeleteDuenioById = async (req,res) => {
-    const {id} = req.params 
-    const pool = await getConnection()
-    await pool.request()
+    try {
+        const {id} = req.params 
+        const pool = await getConnection()
+        await pool.request()
         .input('id',sql.VarChar,id)
         .query('delete from TDuenio where CodDuenio =@id')
-    res.send("se elimino cliente")
+        res.json("se elimino")   
+    } catch (error) {
+        res.json("error")
+    }
 }
 
 export const UpdateDuenioById = async (req,res) => {
@@ -65,9 +72,8 @@ export const UpdateDuenioById = async (req,res) => {
         .input('CelDuenio',sql.VarChar,CelDuenio)
         .input('DireccionDuenio',sql.VarChar,DireccionDuenio)
         .query('update TDuenio set CodDuenio = @CodDuenio,DniDuenio=@DniDuenio,NomDuenio=@NomDuenio,ApeDuenio=@ApeDuenio,EdadDuenio=@EdadDuenio,Email=@Email,CelDuenio=@CelDuenio,DireccionDuenio=@DireccionDuenio where CodDuenio = @CodDuenio')
-        res.json('Dueño actualizado')
+        res.json('actualizado')
     } catch (error) {
-        res.status(500)
-        res.send(error.message)
+        res.json("error")
     }
 }
